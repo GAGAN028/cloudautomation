@@ -1,0 +1,16 @@
+{
+  "name": "cloudautomation-express",
+  "version": "1.0.0",
+  "description": "Express app serving a Bootstrap 5 home page",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
