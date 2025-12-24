@@ -10,8 +10,7 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    env:
-      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+    
 
     steps:
     - name: Checkout code
@@ -25,7 +24,7 @@ jobs:
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "rm -rf /home/${{ secrets.EC2_USER }}/app"
         scp -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app
-        ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd /home/${{ secrets.EC2_USER }}/app && chmod +x utils/install_nginx.sh && bash utils/install_nginx.sh ${{ secrets.DOMAIN_NAME }}"
+        ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd /home/${{ secrets.EC2_USER }}/app && chmod +x utils/install_nginx.sh && bash utils/install_nginx.sh ${{ secrets.EC2_HOST }}"
         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs"
         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd /home/${{ secrets.EC2_USER }}/app && npm install"
         ssh -o "ServerAliveInterval=5" -o "ServerAliveCountMax=1" ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd /home/${{ secrets.EC2_USER }}/app && nohup npm start > app.log 2>&1 & disown && sleep 2 && echo 'App started'" || true
